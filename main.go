@@ -9,10 +9,7 @@ import (
 var imageFile string
 
 func init() {
-	flag.StringVar(&imageFile,
-		"f",
-		"",
-		"Filename")
+	flag.StringVar(&imageFile, "f", "", "Filename")
 }
 
 func main() {
