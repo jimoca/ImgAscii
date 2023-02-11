@@ -18,14 +18,14 @@ type Pixel struct {
 	A int
 }
 
-var pixels = []byte("`^,:;Il!i~+_-?)(|tfjrxnuvczUJCmwqpao*#W&8%B@$")
+var pixels = []byte(".,-~:;=!*#$@")
 
 func Convert(filePath string) string {
 	img, err := readFile(filePath)
 	if err != nil {
 		log.Fatal("Read file error: " + err.Error())
 	}
-	img = resizeImg(img, 100, 30)
+	img = resizeImg(img, 50, 30)
 	width := img.Bounds().Dx()
 	height := img.Bounds().Dy()
 
@@ -43,8 +43,9 @@ func Convert(filePath string) string {
 }
 
 func convertPixelToChar(pixel *Pixel) string {
-	brightness := (pixel.R + pixel.G + pixel.B) * pixel.A / 255
-	scale := float64(255 * 3 / (len(pixels) - 1))
+	brightness := (pixel.R + pixel.G + pixel.B)
+	scale := float64(255 * 3 / (len(pixels) - 2))
+
 	index := int(math.Round(float64(brightness) / scale))
 	return string(pixels[index])
 }
