@@ -9,6 +9,7 @@ import (
 	"os"
 
 	"github.com/nfnt/resize"
+	"golang.org/x/crypto/ssh/terminal"
 )
 
 type Pixel struct {
@@ -18,14 +19,14 @@ type Pixel struct {
 	A int
 }
 
-var pixels = []byte(".,-~:;=!*#$@")
+var pixels = []byte(".,-~:;=!*#@$")
 
 func Convert(filePath string) string {
 	img, err := readFile(filePath)
 	if err != nil {
 		log.Fatal("Read file error: " + err.Error())
 	}
-	img = resizeImg(img, 50, 30)
+	img = resizeImg(img)
 	width := img.Bounds().Dx()
 	height := img.Bounds().Dy()
 
@@ -54,8 +55,16 @@ func rgbaToPixel(r uint32, g uint32, b uint32, a uint32) Pixel {
 	return Pixel{int(r / 257), int(g / 257), int(b / 257), int(a / 257)}
 }
 
-func resizeImg(img image.Image, w int, h int) image.Image {
-	return resize.Resize(uint(w), uint(h), img, resize.Lanczos3)
+func resizeImg(img image.Image) image.Image {
+	imgWidth := float64(img.Bounds().Dx())
+	imgHeight := float64(img.Bounds().Dy())
+	width, height, _ := terminal.GetSize(0)
+	ratio := float64(height) / imgHeight
+	if (imgWidth * ratio / 0.5) < float64(width) {
+		return resize.Resize(uint(imgWidth*ratio/0.5), uint(imgHeight*ratio), img, resize.Lanczos3)
+	}
+	ratio = float64(width) / imgWidth
+	return resize.Resize(uint(imgWidth*ratio), uint(imgHeight*ratio), img, resize.Lanczos3)
 }
 
 func readFile(filePath string) (image.Image, error) {
