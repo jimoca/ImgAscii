@@ -19,7 +19,7 @@ type Pixel struct {
 	A int
 }
 
-var pixels = []byte(".,-~:;=!*#@$")
+var pixels = []byte(".,-~:;=!*#$@")
 
 func Convert(filePath string) string {
 	img, err := readFile(filePath)
